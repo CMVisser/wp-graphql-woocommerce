@@ -47,7 +47,14 @@ class Cart_Type {
 						'type'        => 'String',
 						'description' => __( 'Cart subtotal', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source ) {
-							$price = ! is_null( $source->get_subtotal() ) ? $source->get_subtotal() : 0;
+							if ($source->display_prices_including_tax()) {
+								$price_without_tax = ! is_null( $source->get_subtotal() ) ? $source->get_subtotal() : 0;
+								$tax = ! is_null( $source->get_subtotal_tax() ) ? $source->get_subtotal_tax() : 0;
+								$price = $price_without_tax + $tax;
+							} else {
+								$price = ! is_null( $source->get_subtotal() ) ? $source->get_subtotal() : 0;
+							}
+							
 							return \wc_graphql_price( $price );
 						},
 					),
@@ -63,7 +70,9 @@ class Cart_Type {
 						'type'        => 'String',
 						'description' => __( 'Cart discount total', 'wp-graphql-woocommerce' ),
 						'resolve'     => function( $source ) {
-							$price = ! is_null( $source->get_discount_total() ) ? $source->get_discount_total() : 0;
+							$price_without_tax = ! is_null( $source->get_discount_total() ) ? $source->get_discount_total() : 0;
+							$tax = ! is_null( $source->get_discount_tax() ) ? $source->get_discount_tax() : 0;
+							$price = $price_without_tax + $tax;
 							return \wc_graphql_price( $price );
 						},
 					),
