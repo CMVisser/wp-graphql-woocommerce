@@ -41,6 +41,13 @@ class Root_Query {
 						}
 
 						$cart = Factory::resolve_cart();
+						
+						foreach ($cart->get_cart() as $cart_item_key => $cart_item) {
+						    if (get_post_status($cart_item['product_id']) !== 'publish') {
+							$cart->remove_cart_item($cart_item_key);
+						    }
+						}
+						
 						if ( ! empty( $args['recalculateTotals'] ) && $args['recalculateTotals'] ) {
 							$cart->calculate_totals();
 						}
