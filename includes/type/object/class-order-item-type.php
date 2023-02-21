@@ -206,7 +206,7 @@ class Order_Item_Type {
 						'description' => 'Line item\'s product object',
 						'resolve'     => function( $item, array $args, AppContext $context ) {
 							// @codingStandardsIgnoreStart
-							return ! empty( $item->productId )
+							return ! empty( $item->productId ) && get_post_status($item->productId) === 'publish'
 								? Factory::resolve_crud_object( $item->productId, $context )
 								: null;
 							// @codingStandardsIgnoreEnd
